@@ -4,3 +4,4 @@
 guard 'rake', :task => 'test' do
   watch(%r{^\w*.rb})
 end
+
