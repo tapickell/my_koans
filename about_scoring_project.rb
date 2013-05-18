@@ -28,9 +28,110 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 # More scoring examples are given in the tests below:
 #
 # Your goal is to write the score method.
+#
+#class DiceSet < Struct.new(:key, :length)
+#  def score
+#		return 0 if length < 3
+#		return key == 1 ? 1000 : 100 * key 
+#	end
+#end
+#class Dice
+#	def initialize(dice)
+#    @dice = dice
+#	end
+#	def remove_sets(keys)
+#
+#	end
+#end
+##
+#class DiceSets
+#  def initialize(dice)
+#    sets = []
+#		@dice = dice
+#	end
+#	def get_sets
+#	  group = @dice.group_by { |i| i }
+#    group.each do |key, value|
+#      sets.push key if value.length > 2
+#		end
+#		return sets
+#	end
+#end
+
+class DiceParser
+	def initialize(dice)
+		@dice = dice
+		@singles = []
+	end
+	def parse
+		@groups = self.group_sets
+		self.split_groups_from_singles
+		return {:groups => @groups, :singles => @singles}
+	end
+  def group_sets
+    @dice.group_by { |i| i }
+	end
+	def split_groups_from_singles
+    @groups.each do |key, value| 
+			if value.length > 2
+        @groups[key] = value[0, value.length - 3]
+			  @singles << key
+		  end
+		end
+	end
+end
+
+class DiceSet
+	def initialize(dice)
+		@dice = dice
+	end
+  def score
+		self.parse
+		scorer = Scorer.new([DiceGroup.new(@parsed[:singles]), DiceSingle.new(@parsed[:groups])])
+		scorer.score
+	end
+	def parse
+		dp = DiceParser.new(@dice)
+    @parsed = dp.parse
+	end
+end
+
+class Scorer
+	def initialize(dice_sets)
+		@dice_sets = dice_sets
+	end
+	def score
+		score = 0
+		@dice_sets.each { |dice| score += dice.score }
+		return score
+	end
+end
+
+class DiceGroup < Struct.new(:sets)
+  def score
+		score = 0
+		sets.each do |key|
+      score += key == 1 ? 1000 : 100 * key 
+		end
+		return score
+	end
+end
+
+class DiceSingle < Struct.new(:singles)
+	def score
+		score = 0
+    singles.each do |key, value|
+			score += key == 1 ? value.length * 100 : 0
+			score += key == 5 ? value.length * 50 : 0
+		end
+		return score
+	end
+end
+
 
 def score(dice)
-  # You need to write this method
+	ds = DiceSet.new(dice)
+  ds.score
 end
 
 class AboutScoringProject < EdgeCase::Koan
