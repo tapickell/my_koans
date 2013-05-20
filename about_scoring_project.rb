@@ -29,34 +29,6 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 #
 # Your goal is to write the score method.
 #
-#class DiceSet < Struct.new(:key, :length)
-#  def score
-#		return 0 if length < 3
-#		return key == 1 ? 1000 : 100 * key 
-#	end
-#end
-#class Dice
-#	def initialize(dice)
-#    @dice = dice
-#	end
-#	def remove_sets(keys)
-#
-#	end
-#end
-##
-#class DiceSets
-#  def initialize(dice)
-#    sets = []
-#		@dice = dice
-#	end
-#	def get_sets
-#	  group = @dice.group_by { |i| i }
-#    group.each do |key, value|
-#      sets.push key if value.length > 2
-#		end
-#		return sets
-#	end
-#end
 
 class DiceParser
 	def initialize(dice)
